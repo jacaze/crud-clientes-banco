@@ -57,6 +57,12 @@ public class Main {
                             ClienteModel cliente = new ClienteModel(cpf,nome,telefone,enderecoCadastro);
                             enderecoController.cadastrarEndereco(enderecoCadastro);
                             clienteController.cadastrarCliente(cliente);
+                            break;
+                        case 2:
+                            System.out.println("Digite o CPF que deseja buscar: ");
+                            sc.nextLine();
+                            String cpfBusca = sc.nextLine();
+                            clienteController.buscarPorCPF(cpfBusca);
 
                             break;
                         default:

@@ -47,10 +47,10 @@ public class BancoConnection {
             Class.forName("org.postgresql.Driver");
 
             this.conect = DriverManager.getConnection(url,user,password);
-            System.out.println("\nConexão realizada com sucesso ");
+            System.out.println("\nConexão realizada com sucesso\n ");
 
         } catch (Exception e) {
-            System.out.println("\nErro na conexão com o banco de dados !");
+            System.out.println("\nErro na conexão com o banco de dados\n !");
             e.printStackTrace();
         }
 
