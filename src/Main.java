@@ -4,6 +4,7 @@ import model.ClienteModel;
 import model.EnderecoModel;
 
 import javax.xml.transform.Source;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -63,6 +64,28 @@ public class Main {
                             sc.nextLine();
                             String cpfBusca = sc.nextLine();
                             clienteController.buscarPorCPF(cpfBusca);
+
+                            break;
+                        case 3:
+                            List<ClienteModel> clientes = clienteController.listagemClientes();
+
+                            System.out.println("\n---- CLIENTES CADASTRADOS ----");
+
+                            for(ClienteModel c : clientes){
+                                System.out.println("Id: " + c.getId());
+                                System.out.println("Nome: " + c.getNome());
+                                System.out.println("Cpf: " + c.getCpf());
+                                System.out.println("Telefone: " + c.getTelefone());
+
+                                //endereço
+                                System.out.println("Logradouro: " + c.getEndereco().getLogradouro());
+                                System.out.println("Número: " + c.getEndereco().getNumero());
+                                System.out.println("Municipio: " + c.getEndereco().getMunicipio());
+                                System.out.println("CEP: " + c.getEndereco().getCep());
+
+                                System.out.println("--------------------------");
+                            }
+
 
                             break;
                         default:
