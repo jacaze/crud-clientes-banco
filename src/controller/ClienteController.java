@@ -72,7 +72,6 @@ public class ClienteController {
                 "e.logradouro, e.numero, e.cep, e.municipio " +
                 "FROM clientes c " +
                 "JOIN endereco e ON c.endereco_id = e.id";
-
         try{
            dao.abrirConexao();
 
@@ -113,6 +112,27 @@ public class ClienteController {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    public void deletarCliente(String cpf){
+        String sql = "DELETE FROM clientes WHERE cpf = ?" ;
+        try{
+            dao.abrirConexao();
+            PreparedStatement stmt = dao.getConect().prepareStatement(sql);
+            stmt.setString(1, cpf);
+
+            int linhasAfetadas = stmt.executeUpdate();
+
+            if (linhasAfetadas >0){
+                System.out.println("Cliente com cpf "+cpf+" foi removido");
+            }else{
+                System.out.println("Nenhum cleinte foi removido. O CPF "+cpf+" não foi encontrado");
+            }
+            stmt.close();
+            dao.fecharConexao();
+        } catch (Exception e) {
+            System.out.println("Erro ao remover cliente");;
+        }
     }
 }
 

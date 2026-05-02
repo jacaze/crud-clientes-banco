@@ -28,6 +28,7 @@ public class Main {
                     System.out.println("1 - Cadastro de Cliente");
                     System.out.println("2 - Buscar por CPF");
                     System.out.println("3 - Listar clientes");
+                    System.out.println("4 - Deletar Cliente");
                     int opcliente = sc.nextInt();
                     switch (opcliente){
                         case 1:
@@ -85,14 +86,19 @@ public class Main {
 
                                 System.out.println("--------------------------");
                             }
-
-
+                            break;
+                        case 4:
+                            sc.nextLine();
+                            System.out.println("Digite o CPF do cliente que deseja remover: ");
+                            String cpfRemover = sc.nextLine();
+                            clienteController.deletarCliente(cpfRemover);
                             break;
                         default:
                             break;
                     }
                     break;
                 case 2:
+                    System.out.println("Selecione uma opção");
                     break;
                 default:
                     System.out.println(">> Opção inválida! Tente novamente.");
