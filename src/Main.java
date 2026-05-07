@@ -1,9 +1,13 @@
 import controller.ClienteController;
+import controller.ContaBancariaController;
 import controller.EnderecoController;
 import model.ClienteModel;
+import model.ContaBancariaModel;
 import model.EnderecoModel;
+import model.TipoConta;
 
 import javax.xml.transform.Source;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,6 +17,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         ClienteController clienteController = new ClienteController();
         EnderecoController enderecoController = new EnderecoController();
+        ContaBancariaController contaBancariaController = new ContaBancariaController();
 
         int op = -1;
 
@@ -99,6 +104,36 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("Selecione uma opção");
+                    System.out.println("1 - Abrir uma conta");
+                    System.out.println("2 - Sacar ");
+                    System.out.println("3 - Depositar ");
+                    System.out.println("4 - Extrato");
+                    System.out.println("5 - Encerrar conta");
+                    int opcontas = sc.nextInt();
+                    switch (opcontas){
+                        case 1:
+                            sc.nextLine();
+                            System.out.println("Digite o seu cpf: ");
+                            String cpfConta = sc.nextLine();
+
+                            System.out.println("1 - Poupança");
+                            System.out.println("2 - Corrente");
+                            int tipo = sc.nextInt();
+                            sc.nextLine();
+
+                            TipoConta tipoConta;
+
+                            if (tipo == 1) {
+                                tipoConta = TipoConta.POUPANCA;
+                            } else {
+                                tipoConta = TipoConta.CORRENTE;
+                            }
+
+
+                            contaBancariaController.cadastrarConta(cpfConta, tipoConta);
+
+                            break;
+                    }
                     break;
                 default:
                     System.out.println(">> Opção inválida! Tente novamente.");

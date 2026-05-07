@@ -38,33 +38,60 @@ public class ClienteController {
         }
     }
 
-    public void buscarPorCPF(String cpf){
+    public ClienteModel buscarClientePorCPF(String cpf) {
 
-        String sql =  "SELECT * FROM CLIENTES WHERE CPF = ?";
+        String sql = "SELECT * FROM clientes WHERE cpf = ?";
 
-        try{
-            this.dao.abrirConexao();
+        try {
+            dao.abrirConexao();
+
             PreparedStatement stmt = dao.getConect().prepareStatement(sql);
-            stmt.setString(1,cpf);
+            stmt.setString(1, cpf);
 
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next()){
-                System.out.println("Cliente encontrado!");
-                System.out.println("Nome: "+rs.getString("nome"));
-                System.out.println("Telefone: " +rs.getString("telefone"));
-            }else{
-                System.out.println("\nCliente não encontrado");
+            if (rs.next()) {
+
+                ClienteModel cliente = new ClienteModel(
+                        rs.getString("cpf"),
+                        rs.getString("nome"),
+                        rs.getString("telefone"),
+                        null // depois você pode incluir endereço com JOIN
+                );
+
+                cliente.setId(rs.getInt("id"));
+
+                rs.close();
+                stmt.close();
+                dao.fecharConexao();
+
+                return cliente;
             }
+
             rs.close();
             stmt.close();
-            this.dao.fecharConexao();
-        }catch (Exception e){
-            System.out.println("Falha ao buscar o cliente");
+            dao.fecharConexao();
+
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar cliente");
             e.printStackTrace();
         }
+
+        return null;
     }
 
+    public void buscarPorCPF(String cpf) {
+
+        ClienteModel cliente = buscarClientePorCPF(cpf);
+
+        if (cliente != null) {
+            System.out.println("Cliente encontrado!");
+            System.out.println("Nome: " + cliente.getNome());
+            System.out.println("Telefone: " + cliente.getTelefone());
+        } else {
+            System.out.println("Cliente não encontrado");
+        }
+    }
     public List<ClienteModel> listagemClientes(){
         List<ClienteModel> lista = new ArrayList<>();
 

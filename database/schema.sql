@@ -14,3 +14,12 @@ CREATE TABLE clientes (
     endereco_id INT,
     CONSTRAINT fk_endereco FOREIGN KEY (endereco_id) REFERENCES endereco(id)
 );
+
+CREATE TABLE contas (
+    id SERIAL PRIMARY KEY,
+    saldo DECIMAL(10,2),
+    tipo_conta VARCHAR(20),
+    ativa BOOLEAN,
+    cliente_id INT,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
