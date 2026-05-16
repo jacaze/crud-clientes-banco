@@ -9,6 +9,7 @@ public class EnderecoController {
 
     BancoConnection dao = new BancoConnection();
 
+    // --- Metodo para cadastrar endereço ---
     public void cadastrarEndereco(EnderecoModel endereco) {
 
         String sql = "INSERT INTO endereco (logradouro, numero, cep, municipio) VALUES (?, ?, ?, ?)";

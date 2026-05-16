@@ -15,6 +15,7 @@ public class ClienteController {
 
     BancoConnection dao = new BancoConnection();
 
+    // --- Metodo para cadastrar cliente ---
     public void cadastrarCliente(ClienteModel cliente){
 
         String sql = "INSERT INTO clientes (cpf, nome, telefone, endereco_id) VALUES (?, ?, ?, ?)";
@@ -38,6 +39,7 @@ public class ClienteController {
         }
     }
 
+    // --- Metodo para buscar cliente atráves do cpf ---
     public ClienteModel buscarClientePorCPF(String cpf) {
 
         String sql = "SELECT * FROM clientes WHERE cpf = ?";
@@ -56,7 +58,7 @@ public class ClienteController {
                         rs.getString("cpf"),
                         rs.getString("nome"),
                         rs.getString("telefone"),
-                        null // depois você pode incluir endereço com JOIN
+                        null
                 );
 
                 cliente.setId(rs.getInt("id"));
@@ -141,24 +143,52 @@ public class ClienteController {
         return lista;
     }
 
-    public void deletarCliente(String cpf){
-        String sql = "DELETE FROM clientes WHERE cpf = ?" ;
-        try{
+    // --- Metodo para excluir cliente
+    public void deletarCliente(String cpf) {
+        String sqlVerificaConta = """
+        SELECT COUNT(*) FROM contas co
+        JOIN clientes cl ON co.cliente_id = cl.id
+        WHERE cl.cpf = ? AND co.ativa = true
+    """;
+
+        String sqlDeleteCliente = "DELETE FROM clientes WHERE cpf = ?";
+
+        try {
             dao.abrirConexao();
-            PreparedStatement stmt = dao.getConect().prepareStatement(sql);
-            stmt.setString(1, cpf);
 
-            int linhasAfetadas = stmt.executeUpdate();
+            // --- PASSO 1: VERIFICAÇÃO ---
+            PreparedStatement stmtCheck = dao.getConect().prepareStatement(sqlVerificaConta);
+            stmtCheck.setString(1, cpf);
+            ResultSet rs = stmtCheck.executeQuery();
 
-            if (linhasAfetadas >0){
-                System.out.println("Cliente com cpf "+cpf+" foi removido");
-            }else{
-                System.out.println("Nenhum cleinte foi removido. O CPF "+cpf+" não foi encontrado");
+            if (rs.next()) {
+                int contasAtivas = rs.getInt(1);
+                if (contasAtivas > 0) {
+                    System.out.println("Erro: Não é possível deletar o cliente pois ele possui " + contasAtivas + " conta(s) ativa(s).");
+                    System.out.println("Encerre as contas antes de remover o cliente.");
+                    return;
+                }
             }
-            stmt.close();
+
+            // --- PASSO 2: DELEÇÃO (Só acontece se não houver conta ativa) ---
+            PreparedStatement stmtDel = dao.getConect().prepareStatement(sqlDeleteCliente);
+            stmtDel.setString(1, cpf);
+
+            int linhasAfetadas = stmtDel.executeUpdate();
+
+            if (linhasAfetadas > 0) {
+                System.out.println("Cliente com CPF " + cpf + " foi removido com sucesso.");
+            } else {
+                System.out.println("Nenhum cliente encontrado com o CPF " + cpf);
+            }
+
+            stmtCheck.close();
+            stmtDel.close();
             dao.fecharConexao();
+
         } catch (Exception e) {
-            System.out.println("Erro ao remover cliente");;
+            System.out.println("Erro ao processar a deleção do cliente.");
+            e.printStackTrace();
         }
     }
 }
